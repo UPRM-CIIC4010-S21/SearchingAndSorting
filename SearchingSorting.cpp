@@ -1,5 +1,7 @@
 
 #include <iostream>
+#include <vector>
+#include <algorithm>
 
 using namespace std;
 
@@ -123,16 +125,47 @@ void quickSort(int *numbers, int size) {
     quickSortHelper(numbers, 0, size-1);
 }
 
+bool evenComparator(int i, int j)
+{
+    if ((i % 2 == 0) && (j % 2 == 0)) {
+        // Both numbers are even
+        return i < j;
+    }
+    else if (i % 2 == 0) {
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+
 int main() 
 {
 
     int sorted[10] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
     int unsorted[10] = { 0, 9, 2, 8, 4, 7, 6, 5, 3, 1 };
 
+    vector<int> unsortedVector1 { 0, 9, 2, 8, 4, 7, 6, 5, 3, 1 };
+    vector<int> unsortedVector2 { 0, 9, 2, 8, 4, 7, 6, 5, 3, 1 };
+
     cout << "Position of 0 is: " << binarySearch(0, sorted, 10) << endl;
     cout << "Position of 4 is: " << binarySearch(4, sorted, 10) << endl;
     cout << "Position of 10 is: " << binarySearch(10, sorted, 10) << endl;
 
     quickSort(unsorted, 10);
-    cout << unsorted << endl;
+
+    sort(unsortedVector1.begin(), unsortedVector1.end(), evenComparator);
+
+    sort(unsortedVector2.begin(), unsortedVector2.end(),
+         [](int i, int j) {
+            if ((i % 2 == 0) && (j % 2 == 0)) {
+                // Both numbers are even
+                return i < j;
+            }
+            else if (i % 2 == 0) {
+                return true;
+            }
+            else {
+                return false;
+    }});
 }
