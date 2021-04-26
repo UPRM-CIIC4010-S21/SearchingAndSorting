@@ -1,5 +1,7 @@
 
 #include <iostream>
+#include <vector>
+#include <algorithm>
 
 using namespace std;
 
@@ -72,6 +74,61 @@ void insertionSort(int *numbers, int size)
     }
 }
 
+void merge(int *lHalf, int lSize, int *rHalf, int rSize, int *result, int resultSize)
+{
+    int i = 0;
+    int j = 0;
+    int k = 0;
+    while ((i<lSize) && (j<rSize)) {
+        if (lHalf[i] < rHalf[j]) {
+            result[k] = lHalf[i];
+            k++; i++;
+        } else {
+            result[k] = rHalf[j];
+            k++; j++;
+        }
+    }
+    while (i<lSize) {
+        result[k] = lHalf[i];
+        k++; i++;    
+    }
+    while (j<rSize) {
+        result[k] = rHalf[j];
+        k++; j++;    
+    }
+}
+
+void mergeSort(int *numbers, int size)
+{
+
+    if (size <= 1) return;
+
+    int mid = size / 2;
+    int *leftHalf = new int[mid];
+    int *rightHalf = new int[size - mid];
+    for (int i=0; i<mid; i++) {
+        leftHalf[i] = numbers[i];
+    }
+    for (int i=mid; i<size; i++) {
+        rightHalf[i-mid] = numbers[i];
+    }
+    mergeSort(leftHalf, mid);
+    mergeSort(rightHalf, size - mid);
+    merge(leftHalf, mid, rightHalf, size - mid, numbers, size);
+
+}
+
+bool evenFirst(int i, int j)
+{
+
+    if ((i % 2 == 0) && (j % 2 == 0)) {
+        return i < j;
+    }
+    if ((i % 2 == 1) && (j % 2 == 1)) {
+        return i<j;
+    }
+    return (i % 2 == 0);
+}
 
 int main() 
 {
@@ -83,6 +140,24 @@ int main()
     cout << "Position of 4 is: " << binarySearch(4, myNumbers, 10) << endl;
     cout << "Position of 10 is: " << binarySearch(10, myNumbers, 10) << endl;
 
-    insertionSort(unsorted, 10);
+    mergeSort(unsorted, 10);
 
+    vector<int> unsortedVector1 { 0, 9, 2, 7, 4, 5, 6, 1, 8, 3 };
+
+    sort(unsortedVector1.begin(), unsortedVector1.end(),evenFirst);
+
+    vector<int> unsortedVector2 { 0, 9, 2, 7, 4, 5, 6, 1, 8, 3 };
+
+    sort(unsortedVector2.begin(), unsortedVector2.end(),
+         [](int i, int j) {
+             if ((i % 2 == 0) && (j % 2 == 0))
+             {
+                 return i < j;
+             }
+             if ((i % 2 == 1) && (j % 2 == 1))
+             {
+                 return i < j;
+             }
+             return (i % 2 == 0);
+         });
 }
