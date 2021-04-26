@@ -41,13 +41,98 @@ int binarySearch(int key, int numbers[], int size)
 }
 
 
+void mergeHalves(int *left, int lSize, int *right, int rSize, int *result)
+{
+    int i = 0, j = 0, k = 0;
+
+    while (j < lSize && k < rSize) 
+    {
+        if (left[j] < right[k]) {
+            result[i] = left[j];
+            j++;
+        }
+        else {
+            result[i] = right[k];
+            k++;
+        }
+        i++;
+    }
+    while (j < lSize) {
+        result[i] = left[j];
+        j++; i++;
+    }
+    while (k < rSize) {
+        result[i] = right[k];
+        k++; i++;
+    }
+}
+
+void mergeSort(int numbers[], int size) {
+
+    if (size <= 1) return;
+
+    int mid = size / 2;
+
+    int *leftHalf = new int[mid];
+    for (size_t j = 0; j < mid;j++)
+        leftHalf[j]=numbers[j];
+
+    int *rightHalf = new int[size-mid];
+    for (size_t j = mid; j < size; j++)
+        rightHalf[j-mid] = numbers[j];
+
+    mergeSort(leftHalf, mid);
+    mergeSort(rightHalf, size-mid);
+    mergeHalves(leftHalf, mid, rightHalf, size-mid, numbers);
+    delete [] leftHalf;
+    delete [] rightHalf;
+}
+
+
+int partition(int *numbers, int left, int right) {
+    int pivotIndex = left + (right - left) / 2;
+    int pivotNumber = numbers[pivotIndex];
+    int i = left, j = right;
+    while(i <= j) {
+        while(numbers[i] < pivotNumber) {
+            i++;
+        }
+        while(numbers[j] > pivotNumber) {
+            j--;
+        }
+        if(i <= j) {
+            int temp = numbers[i];
+            numbers[i] = numbers[j];
+            numbers[j] = temp;
+            i++;
+            j--;
+        }
+    }
+    return i;
+}
+
+void quickSortHelper(int *numbers, int left, int right) {
+    if(left < right) {
+        int pivotIndex = partition(numbers, left, right);
+        quickSortHelper(numbers, left, pivotIndex - 1);
+        quickSortHelper(numbers, pivotIndex, right);
+    }
+}
+
+void quickSort(int *numbers, int size) {
+    quickSortHelper(numbers, 0, size-1);
+}
+
 int main() 
 {
 
-    int myNumbers[10] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+    int sorted[10] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+    int unsorted[10] = { 0, 9, 2, 8, 4, 7, 6, 5, 3, 1 };
 
-    cout << "Position of 0 is: " << binarySearch(0, myNumbers, 10) << endl;
-    cout << "Position of 4 is: " << binarySearch(4, myNumbers, 10) << endl;
-    cout << "Position of 10 is: " << binarySearch(10, myNumbers, 10) << endl;
+    cout << "Position of 0 is: " << binarySearch(0, sorted, 10) << endl;
+    cout << "Position of 4 is: " << binarySearch(4, sorted, 10) << endl;
+    cout << "Position of 10 is: " << binarySearch(10, sorted, 10) << endl;
 
+    quickSort(unsorted, 10);
+    cout << unsorted << endl;
 }
